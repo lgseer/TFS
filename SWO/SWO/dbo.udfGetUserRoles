@@ -1,0 +1,28 @@
+USE [TFSPlanTest];
+GO
+SET ANSI_NULLS ON;
+GO
+SET QUOTED_IDENTIFIER ON;
+GO
+ALTER FUNCTION [dbo].[udfGetUserRoles](@USERID int, @RoleID int)
+RETURNS @Roles TABLE (UserRoles  XML NULL) 
+AS
+BEGIN
+  IF (@RoleID = 0 or Exists (Select * from UserRoles where UserID = @USERID and RoleID = @RoleID))
+  BEGIN
+    Declare @userroles XML
+    SET @userroles = ISNULL(
+      (
+      select r.RoleName "@name", ur.roleid as "data()"
+      from UserRoles ur
+      inner join tblRoles r on ur.RoleID = r.RoleId
+      where ur.UserID = @USERID
+      for XML PATH('role'), root('roles')), '')
+    
+    insert into @Roles values(@userroles)
+
+  END
+
+   RETURN;
+END;
+GO
