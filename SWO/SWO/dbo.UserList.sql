@@ -7,7 +7,7 @@ GO
 -- =============================================
 -- Create date: 4/14/2012
 -- Description:	User Listing
--- exec [UserList] @RoleID= 0
+-- 
 -- =============================================
 ALTER PROCEDURE [dbo].[UserList]
 	@UserName Varchar(100) = '',
@@ -35,11 +35,10 @@ BEGIN
 	IF(@AreaCode !='') 
 		SET @qryWhereText  += ' and U.AreaCode = ''' + @AreaCode + ''''
 	IF(@UserID != 0) 
-		SET @qryWhereText += ' and UR.UserId = ' + cast(@UserID as varchar(10)) + ' '
+		SET @qryWhereText += ' and U.UserId = ' + cast(@UserID as varchar(10)) + ' '
 	
 	SET @qryText += @qryWhereText
-	--print @qryText
+	print @qryText
 	Execute (@qryText)
 END
-
 GO
